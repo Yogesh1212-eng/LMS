@@ -38,16 +38,18 @@ export const registerUser = async (req, res) => {
     id: user._id,
     role: user.role,
     },
-    "mysecretkey",
+        process.env.JWT_SECRET,
     {
-    expiresIn: "7d",
+        expiresIn:process.env.JWT_EXPIRE,
     }
 );
+    const userResponse = user.toObject();
+    delete userResponse.password;
     res.status(201).json({
     success: true,
     message: "User Registered Successfully",
     token,
-    user,
+    user:userResponse,
 });
 
     } catch (error) {
@@ -93,17 +95,19 @@ export const loginUser = async (req, res) => {
         id: user._id,
         role: user.role,
         },
-        "mysecretkey",
+        
+            process.env.JWT_SECRET,
         {
-        expiresIn: "7d",
+        expiresIn:process.env.JWT_EXPIRE,
         }
     );
-
+    const userResponse = user.toObject();
+    delete userResponse.password;
     res.status(200).json({
         success: true,
         message: "Login Successful",
         token,
-        user,
+        user:userResponse,
     });
 
     } catch (error) {
@@ -115,3 +119,26 @@ export const loginUser = async (req, res) => {
 
     }
 };
+
+export const getProfile=async(req,res)=>{
+    try{
+        const user=await User.findById(req.user.id).select("-password");
+
+        if (!user){
+            return res.status(404).json({
+                success:false,
+                message:"User not found",
+            });
+        }
+        res.status(200).json({
+            success:true,
+            user,
+        });
+
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            message:error.message,
+        });
+    }
+}
