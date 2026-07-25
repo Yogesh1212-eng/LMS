@@ -1,5 +1,5 @@
 import express from "express";
-import {createCourse, getAllCourses, getSingleCourse} from "../controllers/courseController.js";
+import {createCourse, getAllCourses, getSingleCourse,updateCourse,deleteCourse} from "../controllers/courseController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 import roleMiddleware from "../middleware/roleMiddleware.js";
 
@@ -13,6 +13,21 @@ router.post(
 );
 
 router.get("/",getAllCourses);
+
 router.get("/:id", getSingleCourse);
+
+router.put(
+    "/:id",
+    authMiddleware,
+    roleMiddleware("teacher","admin"),
+    updateCourse
+);
+
+router.delete(
+    "/:id",
+    authMiddleware,
+    roleMiddleware("teacher","admin"),
+    deleteCourse
+);
 
 export default router;
