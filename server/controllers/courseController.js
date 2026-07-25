@@ -9,7 +9,7 @@ export const createCourse=async(req,res)=>{
                 message:"Please fill all required fields",
 
             });
-            
+
         }
         const course=await Course.create({
             title,
@@ -77,5 +77,73 @@ export const getSingleCourse = async (req, res) => {
         success: false,
         message: error.message,
     });
+    }
+};
+
+export const updateCourse = async (req, res) => {
+    try {
+    const { id } = req.params;
+
+    let course = await Course.findById(id);
+
+    if (!course) {
+        return res.status(404).json({
+        success: false,
+        message: "Course not found",
+        });
+    }
+
+    // Ownership Check
+    if(
+        course.teacher.toString() !== req.user.id &&
+        req.user.role !== "admin"
+    ) {
+        return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this course",
+        });
+    }
+
+    course = await Course.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(200).json({
+        success: true,
+        message: "Course Updated Successfully",
+        course,
+    });
+
+    } catch (error) {
+    res.status(500).json({
+        success: false,
+        message: error.message,
+    });
+    }
+}; 
+
+export const deleteCourse=async (req, res)=>{
+    try{
+        const course=await Course.findById(req.params.id);
+        if (!course){
+            return res.status(404).json({
+                success:false,
+                message:"Course not Found",
+            });
+
+        }
+        await  course.deleteOne();
+
+        res.status(200).json({
+            success:true,
+            message:"Course deleted Successfully",
+
+        });
+    }catch(error){
+        res.status(500).json({
+            success:false,
+            message:error.message,
+        });
     }
 };
