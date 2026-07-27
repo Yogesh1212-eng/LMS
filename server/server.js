@@ -8,6 +8,9 @@ dotenv.config();
 console.log("MONGO_URI:", process.env.MONGO_URI);
 connectDB();
 
+// Course route register
+app.use("/api/course", courseRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.use("/api/course", courseRoutes);
 

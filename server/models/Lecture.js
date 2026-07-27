@@ -18,6 +18,10 @@ const lectureSchema = new mongoose.Schema(
         required: true,
     },
 
+    publicId: {
+        type: String,
+        required: true,
+},
     duration: {
         type: Number,
         default: 0,
