@@ -2,51 +2,40 @@ import Course from "../models/Course.js";
 import Lecture from "../models/Lecture.js";
 import cloudinary from "../config/cloudinary.js";
 
-export const createLecture = async (req, res) => {
+export const createCourse = async (req, res) => {
   try {
-    const { title, description, duration } = req.body;
-    const { courseId } = req.params;
+    const { title, description, price, category } = req.body;
 
-    if (!title || !description || !req.file) {
+    if (!title || !description || !price || !category) {
       return res.status(400).json({
         success: false,
-        message: "Title, Description and Video are required",
+        message: "Please fill all required fields",
       });
     }
 
-    const course = await Course.findById(courseId);
+    let thumbnailUrl = "";
 
-    if (!course) {
-      return res.status(404).json({
-        success: false,
-        message: "Course not found",
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "LMS/Courses",
       });
+
+      thumbnailUrl = result.secure_url;
     }
 
-    // Upload Video to Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: "video",
-      folder: "LMS/Lectures",
-    });
-
-    // Create Lecture
-    const lecture = await Lecture.create({
+    const course = await Course.create({
       title,
       description,
-      videoUrl: result.secure_url,
-      publicId: result.public_id,
-      duration,
-      course: courseId,
+      price,
+      category,
+      thumbnail: thumbnailUrl,
+      teacher: req.user.id,
     });
-
-    // Add lecture to course
-    course.lectures.push(lecture._id);
-    await course.save();
 
     res.status(201).json({
       success: true,
-      message: "Lecture Created Successfully",
-      lecture,
+      message: "Course Created Successfully",
+      course,
     });
 
   } catch (error) {
