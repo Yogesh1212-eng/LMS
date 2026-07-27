@@ -48,6 +48,12 @@ const courseSchema = new mongoose.Schema(
         ref: "User",
         },
     ],
+    reviews: [
+    {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Review",
+    },
+],
 
     ratings: {
         type: Number,
