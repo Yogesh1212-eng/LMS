@@ -9,87 +9,63 @@ function MyCourses() {
     loadCourses();
   }, []);
 
-  async function loadCourses() {
+  const loadCourses = async () => {
     try {
       const res = await getMyCourses();
-      setCourses(res.courses || []);
-    } catch (error) {
-      console.log(error);
+      setCourses(res.courses);
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   return (
-    <div>
-      <h1 className="text-4xl font-bold text-white mb-8">
+    <section className="min-h-screen bg-[#0B1120] text-white p-10">
+
+      <h1 className="text-4xl font-bold mb-8">
         My Courses
       </h1>
 
-      {courses.length === 0 ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-10 text-center">
-          <h2 className="text-2xl text-white">
-            No Courses Enrolled
-          </h2>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-          <p className="text-slate-400 mt-3">
-            Start learning by enrolling in a course.
-          </p>
+        {courses.map((course) => (
 
-          <Link
-            to="/courses"
-            className="inline-block mt-6 bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-xl text-white"
+          <div
+            key={course._id}
+            className="bg-slate-900 rounded-xl overflow-hidden"
           >
-            Browse Courses
-          </Link>
 
-        </div>
-      ) : (
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {courses.map((course) => (
-            <div
-              key={course._id}
-              className="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800"
-            >
-              <img
-                src={course.thumbnail}
-                alt={course.title}
-                className="h-52 w-full object-cover"
-              />
+            <img
+              src={course.thumbnail}
+              alt={course.title}
+              className="w-full h-48 object-cover"
+            />
 
-              <div className="p-5">
-                <h2 className="text-white text-xl font-bold">
-                  {course.title}
-                </h2>
+            <div className="p-5">
 
-                <p className="text-slate-400 mt-3">
-                  {course.description}
-                </p>
+              <h2 className="text-2xl font-bold">
+                {course.title}
+              </h2>
 
-                <div className="mt-5 bg-slate-700 rounded-full h-3">
-                  <div className="bg-cyan-400 h-3 rounded-full w-[40%]"></div>
-                </div>
+              <p className="text-slate-400 mt-3">
+                {course.teacher?.name}
+              </p>
 
-                <p className="text-cyan-400 mt-2">
-                  40% Completed
-                </p>
-                <br></br>
-                <Link
-                  to={`/student/learn/${course._id}`}
-                  className="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg">
-                  Start Learning
-                </Link>
-
-                <Link
+              <Link
                 to={`/student/learn/${course._id}`}
-                className="block text-center mt-5 bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl text-white">
-                  Continue Learning
-                </Link>
+                className="inline-block mt-6 bg-indigo-600 hover:bg-indigo-500 px-5 py-3 rounded-lg"
+              >
+                Continue Learning
+              </Link>
 
-              </div>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+
+          </div>
+
+        ))}
+
+      </div>
+
+    </section>
   );
 }
 

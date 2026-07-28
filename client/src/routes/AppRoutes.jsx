@@ -22,6 +22,7 @@ import CreateCourse from "../pages/teacher/CreateCourse";
 import EditCourse from "../pages/teacher/EditCourse";
 import UploadLecture from "../pages/teacher/UploadLecture";
 import EditLecture from "../pages/teacher/EditLecture";
+import Certificates from "../pages/student/Certificates";
 
 
 function AppRoutes() {
@@ -51,6 +52,7 @@ function AppRoutes() {
         <Route path="learn/:id" element={<Learning />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="certificates" element={<Certificates />}/>
 
       </Route>
     
