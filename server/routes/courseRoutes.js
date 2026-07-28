@@ -5,6 +5,7 @@ import {
     getSingleCourse,
     updateCourse,
     deleteCourse,
+    getMyCourses
 } from "../controllers/courseController.js";
 
 import authMiddleware from "../middleware/authMiddleware.js";
@@ -23,6 +24,13 @@ router.post(
 
 router.get("/", getAllCourses);
 
+router.get(
+  "/my-courses",
+  authMiddleware,
+  roleMiddleware("teacher", "admin"),
+  getMyCourses
+);
+
 router.get("/:id", getSingleCourse);
 
 router.put(
@@ -39,5 +47,7 @@ router.delete(
   roleMiddleware("teacher", "admin"),
   deleteCourse
 );
+
+
 
 export default router;

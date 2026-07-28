@@ -6,7 +6,7 @@ import lectureRoutes from "./routes/lectureRoutes.js";
 import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
-
+import progressRoutes from "./routes/progressRoutes.js";
 
 const app = express();
 
@@ -18,6 +18,7 @@ app.use("/api/lecture", lectureRoutes);
 app.use("/api/enroll", enrollmentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/review", reviewRoutes);
+app.use("/api/progress", progressRoutes);
 
 
 app.get("/", (req, res) => {

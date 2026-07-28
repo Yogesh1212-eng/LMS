@@ -1,12 +1,14 @@
 import Course from "../models/Course.js";
 import Lecture from "../models/Lecture.js";
+import cloudinary from "../config/cloudinary.js";
+import fs from "fs";
 
 export const createLecture = async (req, res) => {
     try{
-        const {title, description, videoUrl, duration}=req.body;
+        const {title, description, duration}=req.body;
         const { courseId }=req.params;
 
-        if(!title || !description || !videoUrl){
+        if(!title || !description){
             return res.status(400).json({
                 success:false,
                 message:"All Fields are required",
@@ -20,19 +22,32 @@ export const createLecture = async (req, res) => {
                 success:false,
                 message:"Course not found",
             });
-        }
+        }if (!req.file) {
+  return res.status(400).json({
+    success: false,
+    message: "Please upload a video",
+  });
+}
+
+const result = await cloudinary.uploader.upload(req.file.path, {
+  resource_type: "video",
+  folder: "LMS/Lectures",
+});
 
         const lecture = await Lecture.create({
             title,
             description,
-            videoUrl,
             duration,
-            course:courseId,
+            videoUrl: result.secure_url,
+            publicId: result.public_id,
+            course: courseId,
 
         });
 
-        course.lectures.push(Lecture._id);
+        course.lectures.push(lecture._id);
         await course.save();
+
+        fs.unlinkSync(req.file.path);
 
         res.status(201).json({
             success:true,
@@ -138,29 +153,44 @@ export const updateLecture = async (req, res) => {
 };
 
 export const deleteLecture = async (req, res) => {
-    try {
+  try {
     const { id } = req.params;
 
     const lecture = await Lecture.findById(id);
 
     if (!lecture) {
-        return res.status(404).json({
+      return res.status(404).json({
         success: false,
         message: "Lecture not found",
-        });
+      });
     }
+
+    // Cloudinary se video delete
+    await cloudinary.uploader.destroy(lecture.publicId, {
+      resource_type: "video",
+    });
+
+    // Course se lecture remove
+    await Course.findByIdAndUpdate(
+      lecture.course,
+      {
+        $pull: {
+          lectures: lecture._id,
+        },
+      }
+    );
 
     await Lecture.findByIdAndDelete(id);
 
     res.status(200).json({
-        success: true,
-        message: "Lecture Deleted Successfully",
+      success: true,
+      message: "Lecture Deleted Successfully",
     });
 
-    } catch (error) {
+  } catch (error) {
     res.status(500).json({
-        success: false,
-        message: error.message,
+      success: false,
+      message: error.message,
     });
-    }  
+  }
 };
