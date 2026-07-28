@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: https://lms-3-xdu2.onrender.com/,
-  credential:true,
+    baseURL: import.meta.env.VITE_API_URL
 });
 
 api.interceptors.request.use((config) => {
