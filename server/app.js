@@ -10,7 +10,10 @@ import progressRoutes from "./routes/progressRoutes.js";
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "https://lms-5-k9q6.onrender.com/",
+    credentials: true
+}));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/otp", otpRoutes);
