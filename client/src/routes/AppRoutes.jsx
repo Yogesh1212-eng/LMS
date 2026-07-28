@@ -14,6 +14,15 @@ import MyCourses from "../pages/student/MyCourses";
 import Profile from "../pages/student/Profile";
 import Settings from "../pages/student/Settings";
 import Learning from "../pages/student/Learning";
+import ProtectedRoute from "../components/protected/ProtectedRoute";
+import TeacherLayout from "../layouts/TeacherLayout";
+import TeacherDashboard from "../pages/teacher/TeacherDashboard";
+import TeacherCourses from "../pages/teacher/TeacherCourses";
+import CreateCourse from "../pages/teacher/CreateCourse";
+import EditCourse from "../pages/teacher/EditCourse";
+import UploadLecture from "../pages/teacher/UploadLecture";
+import EditLecture from "../pages/teacher/EditLecture";
+
 
 function AppRoutes() {
   return (
@@ -29,14 +38,37 @@ function AppRoutes() {
       </Route>
 
       {/* Student Dashboard */}
-      <Route path="/student" element={<DashboardLayout />}>
+      <Route
+  path="/student"
+  element={
+    <ProtectedRoute allowedRoles={["student"]}>
+      <DashboardLayout />
+    </ProtectedRoute>
+  }
+>
         <Route path="dashboard" element={<DashboardHome />} />
         <Route path="courses" element={<MyCourses />} />
         <Route path="learn/:id" element={<Learning />} />
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
+
       </Route>
     
+    <Route
+  path="/teacher"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <TeacherLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route path="dashboard" element={<TeacherDashboard />} />
+  <Route path="courses" element={<TeacherCourses />} />
+  <Route path="create-course" element={<CreateCourse />} />
+  <Route path="edit-course/:id" element={<EditCourse />} />
+  <Route path="course/:id/lectures" element={<UploadLecture />} />
+  <Route path="lecture/edit/:id" element={<EditLecture />}/>
+</Route>
 
     </Routes>
   );

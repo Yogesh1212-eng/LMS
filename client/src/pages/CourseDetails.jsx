@@ -70,11 +70,11 @@ function CourseDetails() {
             </h2>
 
             <button
-              onClick={handleEnroll}
-              className="bg-indigo-600 hover:bg-indigo-500 px-8 py-3 rounded-xl text-white font-semibold transition duration-300"
-            >
-              Enroll Now
-            </button>
+  onClick={handleEnroll}
+  className="mt-10 bg-green-600 hover:bg-green-500 px-8 py-4 rounded-xl"
+>
+  Enroll Now
+</button>
 
           </div>
 

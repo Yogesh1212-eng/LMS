@@ -40,6 +40,7 @@ function MyCourses() {
           >
             Browse Courses
           </Link>
+
         </div>
       ) : (
         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -70,13 +71,19 @@ function MyCourses() {
                 <p className="text-cyan-400 mt-2">
                   40% Completed
                 </p>
+                <br></br>
+                <Link
+                  to={`/student/learn/${course._id}`}
+                  className="bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-lg">
+                  Start Learning
+                </Link>
 
                 <Link
-  to={`/student/learn/${course._id}`}
-  className="block text-center mt-5 bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl text-white"
->
-  Continue Learning
-</Link>
+                to={`/student/learn/${course._id}`}
+                className="block text-center mt-5 bg-indigo-600 hover:bg-indigo-500 py-3 rounded-xl text-white">
+                  Continue Learning
+                </Link>
+
               </div>
             </div>
           ))}

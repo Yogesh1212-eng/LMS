@@ -199,3 +199,21 @@ export const deleteCourse = async (req, res) => {
     });
     }
 };
+
+export const getMyCourses = async (req, res) => {
+  try {
+    const courses = await Course.find({
+      teacher: req.user.id,
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      courses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
