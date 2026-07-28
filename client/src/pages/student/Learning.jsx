@@ -13,6 +13,7 @@ function Learning() {
   const [lectures, setLectures] = useState([]);
   const [currentLecture, setCurrentLecture] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [completedLectures, setCompletedLectures] = useState([]);
 
   useEffect(() => {
     fetchLectures();
@@ -28,24 +29,46 @@ function Learning() {
 
       setLectures(res.data.lectures);
 
-      if(res.data.lectures.length > 0){
-        setCurrentLecture(res.data.lectures[0]);
-      }
+      if (res.data.lectures.length > 0) {
+  setCurrentLecture((prev) => prev || res.data.lectures[0]);
+}
 
     } catch(err){
       console.log(err);
     }
 
   };
+  
   const fetchProgress = async () => {
   try {
     const res = await getProgress(id);
+
     setProgress(res.progress.percentage);
+
+    setCompletedLectures(
+      res.progress.completedLectures || []
+    );
+
   } catch (err) {
     console.log(err);
   }
 };
 
+const currentIndex = lectures.findIndex(
+  (lecture) => lecture._id === currentLecture?._id
+);
+
+const handlePrevious = () => {
+  if (currentIndex > 0) {
+    setCurrentLecture(lectures[currentIndex - 1]);
+  }
+};
+
+const handleNext = () => {
+  if (currentIndex < lectures.length - 1) {
+    setCurrentLecture(lectures[currentIndex + 1]);
+  }
+};
 
   return (
 
@@ -87,21 +110,35 @@ function Learning() {
           </h2>
 
 
-          {
-            lectures.map((lecture)=>(
+          {lectures.map((lecture) => (
 
-              <button
-                key={lecture._id}
-                onClick={()=>setCurrentLecture(lecture)}
-                className="block w-full text-left bg-slate-800 p-3 rounded-lg mb-3"
-              >
+  <button
+    key={lecture._id}
+    onClick={() => setCurrentLecture(lecture)}
+    className={`block w-full text-left p-3 rounded-lg mb-3 transition
+      ${
+        currentLecture?._id === lecture._id
+          ? "bg-indigo-600"
+          : "bg-slate-800 hover:bg-slate-700"
+      }`}
+  >
 
-                {lecture.title}
+    <div className="flex justify-between items-center">
 
-              </button>
+      <span>{lecture.title}</span>
 
-            ))
-          }
+      {completedLectures.includes(lecture._id) && (
+        <span className="text-green-400 text-xl">
+          ✓
+        </span>
+      )}
+
+    </div>
+
+  </button>
+
+))}
+          
 
 
         </div>
@@ -109,59 +146,95 @@ function Learning() {
 
 
         {/* Video Section */}
+        {/* Video Section */}
 
-        <div className="col-span-2 bg-slate-900 p-6 rounded-xl">
+<div className="col-span-2 bg-slate-900 p-6 rounded-xl">
 
+  {currentLecture && (
+    <>
 
-        {
-          currentLecture && (
+      <h1 className="text-3xl font-bold mb-5">
+        {currentLecture.title}
+      </h1>
 
-            <>
+      <video
+        src={currentLecture.videoUrl}
+        controls
+        className="w-full rounded-xl"
+      />
 
-            <h1 className="text-3xl font-bold mb-5">
-              {currentLecture.title}
-            </h1>
+      <p className="mt-5 text-slate-300">
+        {currentLecture.description}
+      </p>
 
+      <button
+        disabled={completedLectures.includes(currentLecture._id)}
+        onClick={async () => {
+          try {
+            await markLectureComplete(currentLecture._id);
 
-            <video
-              src={currentLecture.videoUrl}
-              controls
-              className="w-full rounded-xl"
-            />
+            await fetchProgress();
 
+            
 
-            <p className="mt-5 text-slate-300">
-              {currentLecture.description}
-            </p>
+            // Automatically move to next lecture
+            if (currentIndex < lectures.length - 1) {
+              setCurrentLecture(lectures[currentIndex + 1]);
+            }
+            alert("Lecture Completed");
 
-          <button
-  onClick={async () => {
-    try {
-      await markLectureComplete(currentLecture._id);
+          } catch (err) {
+            alert(
+              err.response?.data?.message ||
+              "Something went wrong"
+            );
+          }
+        }}
+        className={`mt-5 px-6 py-3 rounded-lg ${
+          completedLectures.includes(currentLecture._id)
+            ? "bg-gray-600 cursor-not-allowed"
+            : "bg-green-600 hover:bg-green-500"
+        }`}
+      >
+        {completedLectures.includes(currentLecture._id)
+          ? "✓ Completed"
+          : "✓ Mark as Complete"}
+      </button>
 
-      await fetchProgress();
+      {/* Previous / Next */}
 
-      alert("Lecture Completed");
-    } catch (err) {
-      alert(err.response?.data?.message || "Something went wrong");
-    }
-  }}
-  className="mt-5 bg-green-600 hover:bg-green-500 px-6 py-3 rounded-lg"
->
-  ✓ Mark as Complete
-</button>
-              
+      <div className="flex justify-between mt-6">
 
+        <button
+          onClick={handlePrevious}
+          disabled={currentIndex === 0}
+          className={`px-6 py-3 rounded-lg ${
+            currentIndex === 0
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-500"
+          }`}
+        >
+          ◀ Previous
+        </button>
 
+        <button
+          onClick={handleNext}
+          disabled={currentIndex === lectures.length - 1}
+          className={`px-6 py-3 rounded-lg ${
+            currentIndex === lectures.length - 1
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-500"
+          }`}
+        >
+          Next ▶
+        </button>
 
-            </>
+      </div>
 
-          )
-        }
+    </>
+  )}
 
-
-        </div>
-
+</div>
 
       </div>
 

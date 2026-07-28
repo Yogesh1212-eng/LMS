@@ -77,7 +77,6 @@ export const getProgress = async (req, res) => {
     });
 
     if (!progress) {
-
       return res.status(200).json({
         success: true,
         progress: {
@@ -85,8 +84,19 @@ export const getProgress = async (req, res) => {
           completedLectures: [],
         },
       });
-
     }
+
+    const course = await Course.findById(req.params.courseId);
+
+    const percentage = Math.round(
+      (progress.completedLectures.length /
+        course.lectures.length) *
+        100
+    );
+
+    progress.percentage = percentage;
+
+    await progress.save();
 
     res.status(200).json({
       success: true,
@@ -94,11 +104,9 @@ export const getProgress = async (req, res) => {
     });
 
   } catch (error) {
-
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
