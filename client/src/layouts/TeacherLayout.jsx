@@ -1,14 +1,23 @@
 import { Outlet } from "react-router-dom";
+import Navbar from "../components/layout/Navbar";
 import TeacherSidebar from "../components/teacher/TeacherSidebar";
 
 function TeacherLayout() {
   return (
-    <div className="flex bg-[#0B1120]">
-      <TeacherSidebar />
+    <div className="min-h-screen bg-[#0B1120]">
 
-      <main className="flex-1 min-h-screen">
-        <Outlet />
-      </main>
+      <Navbar />
+
+      <div className="flex pt-20">
+
+        <TeacherSidebar />
+
+        <main className="flex-1 p-6">
+          <Outlet />
+        </main>
+
+      </div>
+
     </div>
   );
 }
