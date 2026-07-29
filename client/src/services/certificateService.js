@@ -7,7 +7,7 @@ export const getMyCertificates = async () => {
 
 export const downloadCertificate = async (courseId) => {
   window.open(
-    `http://localhost:5000/api/certificate/${courseId}`,
+    `https://lms-kjen.onrender.com/api/certificate/${courseId}`,
     "_blank"
   );
 };
