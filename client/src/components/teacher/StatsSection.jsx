@@ -1,30 +1,30 @@
 import DashboardCard from "./DashboardCard";
 
-function StatsSection() {
+function StatsSection({ dashboard }) {
   return (
     <div className="grid md:grid-cols-4 gap-6">
 
       <DashboardCard
         title="Courses"
-        value="12"
+        value={dashboard.totalCourses}
         color="bg-indigo-600"
       />
 
       <DashboardCard
         title="Students"
-        value="425"
+        value={dashboard.totalStudents}
         color="bg-cyan-600"
       />
 
       <DashboardCard
         title="Lectures"
-        value="98"
+        value={dashboard.totalLectures}
         color="bg-emerald-600"
       />
 
       <DashboardCard
         title="Revenue"
-        value="₹45,000"
+        value={`₹${dashboard.totalRevenue}`}
         color="bg-orange-500"
       />
 

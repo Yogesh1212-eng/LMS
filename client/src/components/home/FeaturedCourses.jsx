@@ -14,6 +14,8 @@ function FeaturedCourses() {
       const res = await api.get("/course");
 
       setCourses(res.data.courses);
+      console.log("courses:", res.data.courses);
+      
     } catch (err) {
       console.log(err);
     }

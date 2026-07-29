@@ -6,7 +6,7 @@ import { downloadCertificate, getMyCertificates } from "../controllers/certifica
 const router = express.Router();
 
 router.get(
-  "/",
+  "/my",
   authMiddleware,
   roleMiddleware("student"),
   getMyCertificates
