@@ -4,6 +4,7 @@ import { logout } from "../../redux/slices/authSlice";
 
 function Navbar() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -12,50 +13,104 @@ function Navbar() {
     navigate("/login");
   };
 
+  const dashboardLink =
+    user?.role === "teacher"
+      ? "/teacher/dashboard"
+      : "/student/dashboard";
+
   return (
     <nav
       style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 999,
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
         padding: "15px 40px",
         background: "#111827",
         color: "#fff",
+        boxSizing: "border-box",
       }}
     >
       <Link
         to="/"
-        style={{ color: "#fff", textDecoration: "none", fontSize: "22px" }}
+        style={{
+          color: "#fff",
+          textDecoration: "none",
+          fontSize: "24px",
+          fontWeight: "bold",
+        }}
       >
         LMS
       </Link>
 
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Link to="/" style={{ color: "white" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "20px",
+        }}
+      >
+        <Link
+          to="/"
+          style={{ color: "white", textDecoration: "none" }}
+        >
           Home
         </Link>
 
-        <Link to="/courses" style={{ color: "white" }}>
+        <Link
+          to="/courses"
+          style={{ color: "white", textDecoration: "none" }}
+        >
           Courses
         </Link>
 
         {isAuthenticated ? (
           <>
-            <Link to="/student/dashboard" style={{ color: "white" }}>
+            <Link
+              to={dashboardLink}
+              style={{
+                color: "white",
+                textDecoration: "none",
+              }}
+            >
               Dashboard
             </Link>
 
-            <span>{user?.name}</span>
+            <span style={{ fontWeight: "bold" }}>
+              {user?.name}
+            </span>
 
-            <button onClick={handleLogout}>Logout</button>
+            <button
+              onClick={handleLogout}
+              style={{
+                background: "#ef4444",
+                color: "#fff",
+                border: "none",
+                padding: "8px 16px",
+                borderRadius: "8px",
+                cursor: "pointer",
+              }}
+            >
+              Logout
+            </button>
           </>
         ) : (
           <>
-            <Link to="/login" style={{ color: "white" }}>
+            <Link
+              to="/login"
+              style={{ color: "white", textDecoration: "none" }}
+            >
               Login
             </Link>
 
-            <Link to="/signup" style={{ color: "white" }}>
+            <Link
+              to="/signup"
+              style={{ color: "white", textDecoration: "none" }}
+            >
               Signup
             </Link>
           </>
