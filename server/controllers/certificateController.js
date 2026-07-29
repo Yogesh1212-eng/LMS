@@ -2,6 +2,8 @@ import PDFDocument from "pdfkit";
 import Course from "../models/Course.js";
 import Progress from "../models/Progress.js";
 import User from "../models/User.js";
+import Quiz from "../models/Quiz.js";
+import QuizAttempt from "../models/QuizAttempt.js";
 
 // ================= DOWNLOAD CERTIFICATE =================
 
@@ -10,6 +12,7 @@ export const downloadCertificate = async (req, res) => {
     const studentId = req.user.id;
     const { courseId } = req.params;
 
+    // Course Progress Check
     const progress = await Progress.findOne({
       student: studentId,
       course: courseId,
@@ -20,6 +23,26 @@ export const downloadCertificate = async (req, res) => {
         success: false,
         message: "Complete the course first",
       });
+    }
+
+    // Quiz Pass Check
+    const quiz = await Quiz.findOne({
+      course: courseId,
+    });
+
+    if (quiz) {
+      const attempt = await QuizAttempt.findOne({
+        student: studentId,
+        quiz: quiz._id,
+        passed: true,
+      });
+
+      if (!attempt) {
+        return res.status(400).json({
+          success: false,
+          message: "Pass the quiz first",
+        });
+      }
     }
 
     const student = await User.findById(studentId);
@@ -102,18 +125,33 @@ export const getMyCertificates = async (req, res) => {
     const progress = await Progress.find({
       student: studentId,
       percentage: 100,
-    }).populate({
-      path: "course",
-      select: "title",
-    });
+    }).populate("course", "title");
 
-    const certificates = progress
-      .filter((item) => item.course)
-      .map((item) => ({
+    const certificates = [];
+
+    for (const item of progress) {
+      if (!item.course) continue;
+
+      const quiz = await Quiz.findOne({
+        course: item.course._id,
+      });
+
+      if (!quiz) continue;
+
+      const passedAttempt = await QuizAttempt.findOne({
+        student: studentId,
+        quiz: quiz._id,
+        passed: true,
+      });
+
+      if (!passedAttempt) continue;
+
+      certificates.push({
         courseId: item.course._id,
         courseTitle: item.course.title,
-        completedAt: item.updatedAt,
-      }));
+        completedAt: passedAttempt.updatedAt,
+      });
+    }
 
     res.status(200).json({
       success: true,

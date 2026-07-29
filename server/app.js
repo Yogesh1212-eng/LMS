@@ -7,10 +7,13 @@ import enrollmentRoutes from "./routes/enrollmentRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import progressRoutes from "./routes/progressRoutes.js";
+import quizRoutes from "./routes/quizRoutes.js";
+
+
 
 const app = express();
 
-app.use(cors());
+app.use(cors({}));
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/otp", otpRoutes);
@@ -19,6 +22,7 @@ app.use("/api/enroll", enrollmentRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/review", reviewRoutes);
 app.use("/api/progress", progressRoutes);
+app.use("/api/quiz", quizRoutes);
 
 
 app.get("/", (req, res) => {

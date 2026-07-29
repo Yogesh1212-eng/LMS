@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import api from "../../services/api";
 import {
   markLectureComplete,
@@ -229,7 +229,63 @@ const handleNext = () => {
           Next ▶
         </button>
 
+
+
+
       </div>
+      <div className="flex justify-between mt-6">
+
+  <button
+    onClick={handlePrevious}
+    disabled={currentIndex === 0}
+    className={`px-6 py-3 rounded-lg ${
+      currentIndex === 0
+        ? "bg-gray-600 cursor-not-allowed"
+        : "bg-indigo-600 hover:bg-indigo-500"
+    }`}
+  >
+    ◀ Previous
+  </button>
+
+  <button
+    onClick={handleNext}
+    disabled={currentIndex === lectures.length - 1}
+    className={`px-6 py-3 rounded-lg ${
+      currentIndex === lectures.length - 1
+        ? "bg-gray-600 cursor-not-allowed"
+        : "bg-indigo-600 hover:bg-indigo-500"
+    }`}
+  >
+    Next ▶
+  </button>
+
+</div>
+
+{/* Quiz */}
+
+{progress === 100 && (
+  <div className="mt-8 border-t border-slate-700 pt-6">
+
+    <h2 className="text-2xl font-bold text-green-400">
+      🎉 Course Completed
+    </h2>
+
+    <p className="text-slate-300 mt-2">
+      You have completed all lectures.
+      Now attempt the quiz to unlock your certificate.
+    </p>
+
+    <Link
+      to={`/student/quiz/${id}`}
+      className="inline-block mt-5 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold px-6 py-3 rounded-lg"
+    >
+      📝 Start Quiz
+    </Link>
+
+  </div>
+)}
+
+      
 
     </>
   )}

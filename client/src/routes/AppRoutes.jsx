@@ -23,7 +23,10 @@ import EditCourse from "../pages/teacher/EditCourse";
 import UploadLecture from "../pages/teacher/UploadLecture";
 import EditLecture from "../pages/teacher/EditLecture";
 import Certificates from "../pages/student/Certificates";
-
+import CreateQuiz from "../pages/teacher/CreateQuiz";
+import AddQuestion from "../pages/teacher/AddQuestion";
+import TeacherCourseDetails from "../pages/teacher/TeacherCourseDetails";
+import Quiz from "../pages/student/Quiz";
 
 function AppRoutes() {
   return (
@@ -53,7 +56,9 @@ function AppRoutes() {
         <Route path="profile" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
         <Route path="certificates" element={<Certificates />}/>
+        <Route path="quiz/:courseId" element={<Quiz />} />
 
+        
       </Route>
     
     <Route
@@ -70,6 +75,15 @@ function AppRoutes() {
   <Route path="edit-course/:id" element={<EditCourse />} />
   <Route path="course/:id/lectures" element={<UploadLecture />} />
   <Route path="lecture/edit/:id" element={<EditLecture />}/>
+  <Route path="quiz/create" element={<CreateQuiz />} />
+  <Route
+  path="quiz/:quizId/questions"
+  element={<AddQuestion />}/>
+<Route
+  path="course/:id"
+  element={<TeacherCourseDetails />}
+/>
+
 </Route>
 
     </Routes>
